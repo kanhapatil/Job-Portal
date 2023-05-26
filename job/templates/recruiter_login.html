@@ -1,0 +1,39 @@
+{% load static %}
+{% block body %}
+
+{% include 'navigation.html' %}
+
+<marquee style="font-weight: 500;">Recruiter Login</marquee>
+
+<form method="POST" class="container mt-3" style="width:55%">
+    {% csrf_token %}
+    <label for="email"><b>Email ID</b></label>
+    <input type="email" id="uname" name="uname" class="form-control">
+    
+    <label for="password" class="mt-1"><b>Password</b></label>
+    <input type="password" id="password" name="pwd" class="form-control">
+
+    <input type="submit" value="Login" class="btn btn-light mt-2 abtn" style="background-color: maroon; color: white;">
+    <p>Don't have an account? <a href="/recruiter_signup" style="text-decoration: none;">Click here</a></p>
+</form>
+
+{% if error == "no" %}
+<script>
+    alert('Login Successfull');
+    window.location = ('{% url "recruiter_home" %}')
+</script>
+
+{% elif error == "yes" %}
+<script>
+    alert("Invalid Login Credentials, Try Again...");
+    window.location = ('{% url "recruiter_login" %}')
+</script>
+
+{% elif error == "not" %}
+<script>
+    alert("Your Login Status is Pending;");
+    window.location = ('{% url "recruiter_login" %}')
+</script>
+{% endif %}
+
+{% endblock body %}

@@ -1,0 +1,35 @@
+{% load static %}
+{% block body %}
+
+{% include 'admin_navigation.html' %}
+<marquee style="font-weight: 500;">Change Recruiter Status</marquee>
+
+<form method="POST" class="container mt-3" style="width:55%">
+    {% csrf_token %}
+    <label for="name"><b>Recruiter Name</b></label>
+    <input type="text" id="name" name="name" value="{{recruiter.user.first_name}} {{recruiter.user.last_name}}" class="form-control">
+    
+    <label for="status" class="mt-1"><b>Status</b></label>
+    <select class="form-control" name="status">
+        <option value="Accept">Accept</option>
+        <option value="Reject">Reject</option>
+        <option value="pending">Pending</option>
+    </select>
+
+    <input type="submit" value="Change Status" class="btn btn-light mt-2 abtn" style="background-color: maroon; color: white;">
+</form>
+
+{% if error == "no" %}
+<script>
+    alert('Status changed successfully');
+    window.location = ('{% url "recruiter_pending" %}')
+</script>
+
+{% elif error == "yes" %}
+<script>
+    alert("Something went wrong, Try Again...");
+    window.location = ('{% url "change_status" %}')
+</script>
+{% endif %}
+ 
+{% endblock body %}
