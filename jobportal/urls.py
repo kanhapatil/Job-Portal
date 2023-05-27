@@ -37,5 +37,7 @@ urlpatterns = [
     path('recruiter_accepted/', recruiter_accepted, name="recruiter_accepted"),
     path('recruiter_rejected/', recruiter_rejected, name="recruiter_rejected"),
     path('recruiter_all/', recruiter_all, name="recruiter_all"),
+    path('delete_recruiter/<int:pid>', delete_recruiter, name="delete_recruiter"),
     path('change_status/<int:pid>', change_status, name="change_status"),
+    path('change_passwordadmin', change_passwordadmin, name="change_passwordadmin"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

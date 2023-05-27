@@ -157,7 +157,7 @@ def view_users(request):
 def delete_user(request, pid):
     if not request.user.is_authenticated:
         return redirect('admin_login')
-    student = StudentUser.objects.get(id=pid)
+    student = User.objects.get(id=pid)
     student.delete()
     return redirect('view_users')
 
@@ -194,6 +194,14 @@ def recruiter_all(request):
     d = {'data':data}
     return render(request, 'recruiter_all.html', d)
 
+# DELETE RECRUITER
+def delete_recruiter(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    recruiter = User.objects.get(id=pid)
+    recruiter.delete()
+    return redirect('recruiter_all')
+
 
 # CHANGE STATUS
 def change_status(request, pid):
@@ -211,3 +219,25 @@ def change_status(request, pid):
             error = "yes"
     d = {'recruiter':recruiter, 'error':error}
     return render(request, 'change_status.html',d)
+
+
+# CHANGE ADMIN PASSWORD
+def change_passwordadmin(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    error = ""
+    if request.method == 'POST':
+        c = request.POST['currentpwd']
+        n = request.POST['newpwd']
+        try:
+            u = User.objects.get(id=request.user.id)
+            if u.check_password(c):
+                u.set_password()
+                u.save()
+                error = "no"
+            else:
+                error = "yes"
+        except:
+            error = "yes"
+    d = {'error':error}
+    return render(request, 'change_passwordadmin.html', d)
