@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import StudentUser, Recruiter
+from .models import StudentUser, Recruiter, Job
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from datetime import date
 
 # INDEX PAGE
 def index(request):
@@ -230,9 +231,9 @@ def change_passwordadmin(request):
         c = request.POST['currentpwd']
         n = request.POST['newpwd']
         try:
-            u = User.objects.get(id=request.user.id)
+            u = User.objects.get(id=request.user.id) 
             if u.check_password(c):
-                u.set_password()
+                u.set_password(n)
                 u.save()
                 error = "no"
             else:
@@ -241,3 +242,79 @@ def change_passwordadmin(request):
             error = "yes"
     d = {'error':error}
     return render(request, 'change_passwordadmin.html', d)
+
+
+# CHANGE USER PASSWORD
+def change_passworduser(request):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+    error = ""
+    if request.method == 'POST':
+        c = request.POST['currentpwd']
+        n = request.POST['newpwd']
+        try:
+            u = User.objects.get(id=request.user.id) 
+            if u.check_password(c):
+                u.set_password(n)
+                u.save()
+                error = "no"
+                return
+            else:
+                error = "yes"
+                return
+        except:
+            error = "yes"
+            return
+    d = {'error':error}
+    return render(request, 'change_passworduser.html', d)
+
+
+#  ADD JOB FUNCTION
+def add_job(request):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')
+    
+    error = ""
+    if request.method == 'POST':
+        jt = request.POST['jobtitle']
+        sd = request.POST['startdate']
+        ed = request.POST['enddate']
+        sal = request.POST['salary']
+        l = request.FILES['logo']
+        exp = request.POST['experience']
+        loc = request.POST['location']
+        skills = request.POST['skills']
+        des = request.POST['description']
+        user = request.user
+        recruiter = Recruiter.objects.get(user=user)
+
+       
+        try:
+            Job.objects.create(recruiter=recruiter, start_date=sd, end_date=ed, title=jt, salary=sal, image=l, description=des, experience=exp, location=loc, skills=skills, creationdate=date.today())
+            error = "no"
+        except:
+            error = "yes"
+    d = {'error':error}
+    return render(request, 'add_job.html', d)
+
+
+# JOB LIST FUNCTION
+def job_list(request):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')
+    user = request.user
+    recruiter = Recruiter.objects.get(user=user)
+    job = Job.objects.filter(recruiter=recruiter)
+    d = {'job':job}
+    return render(request, 'job_list.html', d)
+
+# EDIT JOB DETAILS FUNCTION
+def edit_jobdetail(request, pid):
+    if not request.user.is_authenticated:
+        return redirect('recruiter_login')
+    
+    error = ""
+    job = Job.objects.get(id=pid)
+
+    d = {'error':error, 'job':job}
+    return render(request, 'edit_jobdetail.html',d)

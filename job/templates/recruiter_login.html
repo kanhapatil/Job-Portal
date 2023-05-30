@@ -5,8 +5,7 @@
 
 <marquee style="font-weight: 500;">Recruiter Login</marquee>
 
-<form method="POST" class="container mt-3" style="width:55%">
-    {% csrf_token %}
+<form method="POST" class="container mt-3" style="width:55%">{% csrf_token %}
     <label for="email"><b>Email ID</b></label>
     <input type="email" id="uname" name="uname" class="form-control">
     

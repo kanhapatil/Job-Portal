@@ -1,0 +1,80 @@
+{% load static %}
+{% block body %}
+
+{% include 'recruiter_navigation.html' %}
+<marquee style="font-weight: 500;">Add Job</marquee>
+
+<form method="POST" name="signup" onsubmit="return checkpass();" class="container mt-3" style="width:55%" enctype="multipart/form-data">{% csrf_token %}
+    <div class="row">
+        <div class="col-md-12">
+            <label for="jobtitle"><b>Job Title</b></label>
+            <input type="text" class="form-control" id="jobtitle" name="jobtitle" required>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-6">
+            <label for="sdate" class="mt-1"><b>Start Date</b></label>
+            <input type="date" class="form-control" name="startdate" required>
+        </div>
+
+        <div class="col-6">
+            <label for="edate" class="mt-1"><b>End Date</b></label>
+            <input type="date" class="form-control" id="edate" name="enddate" required>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-6">
+            <label for="salary" class="mt-1"><b>Salary (Per Month)</b></label>
+            <input type="text" class="form-control" name="salary" required>
+        </div>
+
+        <div class="col-6">
+            <label for="logo" class="mt-1"><b>Logo</b></label>
+            <input type="file" class="form-control" id="logo" name="logo" required>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-md-6">
+            <label for="exp" class="mt-1"><b>Experience (In Year)</b></label>
+            <input type="text" class="form-control" name="experience" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="location" class="mt-1"><b>Location</b></label>
+            <input type="text" class="form-control" name="location" required>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-12">
+            <label for="skills" class="mt-1"><b>Skills</b></label>
+            <input type="text" class="form-control" name="skills" required>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-12">
+            <label for="desc" class="mt-1"><b>Description</b></label><br>
+            <textarea name="description" cols="30" class="form-control" rows="7"></textarea>
+        </div>
+    </div>
+
+    <input type="submit" value="Add Job" class="btn btn-light mt-2 abtn" style="background-color: maroon; color: white;">
+</form>
+
+{% if error == 'no' %}
+<script>
+    alert('Job Added Successful');
+    window.location = ('{% url "job_list" %}')
+</script>
+{% elif error == 'yes' %}
+<script>
+    alert("Something went wront, Try Again...");
+    window.location = ('{% url "recruiter_signup" %}')
+</script>
+{% endif %}
+  
+{% endblock body %}

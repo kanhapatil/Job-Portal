@@ -1,0 +1,136 @@
+{% load static %}
+{% block body %}
+
+{% include 'recruiter_navigation.html' %}
+<marquee style="font-weight: 500;">Manage Job Details</marquee>
+
+<div class="container">
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name" class="form-control" style="width: 20%; border: 2px solid black;">
+  </div>
+
+<table id="myTable" class="table table-hover container">
+    <thead>
+        <tr class="header">
+            <th>S. No.</th>
+            <th>Job Title</th>
+            <th>Creation Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in job %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.title}}</td>
+                <td>{{i.creationdate}}</td>
+                <td>
+                    <a href="{% url 'edit_jobdetail' i.id %}" class="btn btn-warning">Edit</a>
+                    <a href="#" class="btn btn-success" style="background-color: maroon;">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination container">
+    <button onclick="previousPage()" class="btn btn-primary" style="background-color: maroon;">Previous</button>
+    <button onclick="nextPage()" class="btn btn-primary" style="margin-left: 10px; margin-right: 10px; background-color: maroon;">Next</button>
+    <button onclick="exportTable()" class="btn btn-warning">Export Table to CSV File</button>
+  </div>
+  
+<script>
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }       
+    }
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script>
+    let currentPage = 0;
+    let table;
+
+    function previousPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        table.page(currentPage).draw(false);
+      }
+    }
+
+    function nextPage() {
+      if (currentPage < table.page.info().pages - 1) {
+        currentPage++;
+        table.page(currentPage).draw(false);
+      }
+    }
+
+    function exportTable() {
+      // Get the table element
+      const tableElement = document.getElementById("myTable");
+
+      // Create an empty array to store table rows
+      const rows = [];
+
+      // Iterate over each row in the visible page
+      $(tableElement).find("tbody tr").each(function() {
+        const row = this;
+
+        // Create an empty array to store row cells
+        const cells = [];
+
+        // Iterate over each cell in the row
+        $(row).find("td").each(function() {
+          const cell = this;
+
+          // Push the cell's innerText to the cells array
+          cells.push(cell.innerText);
+        });
+
+        // Push the row cells to the rows array as a comma-separated string
+        rows.push(cells.join(","));
+      });
+
+      // Create a CSV content string by joining the rows with line breaks
+      const csvContent = rows.join("\n");
+
+      // Create a Blob object with the CSV content
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+      // Create a temporary URL for the Blob object
+      const url = URL.createObjectURL(blob);
+
+      // Create a temporary anchor element
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "table.csv");
+      link.style.display = "none";
+
+      // Append the anchor element to the body
+      document.body.appendChild(link);
+
+      // Click the anchor element to trigger the download
+      link.click();
+
+      // Cleanup: Remove the temporary anchor element and URL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>  
+
+{% endblock body %}
